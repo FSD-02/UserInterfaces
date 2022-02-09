@@ -27,16 +27,67 @@
 	<section id="jokes">
 		<h1>Are theses jokes funny?</h1>
 		<hr />
-
 		<img id="yesNo"  />
 		<p id="cn">
 
 		</p>
 		<h2>Try another jokes? --> <input type="button" id="newJoke" value="Try again!" /></h2>
 	
-	</section>
-	<script>
+		<ul id="swf">
 
+		</ul>
+	</section>
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+	<script>
+		// Using the https://api.chucknorris.io/ show a new random joke to a user
+
+		//	Using the https://yesno.wtf/ display an image to indicate whether the joke was funny or not (include src and alt)
+		
+		// When the DOM is ready, request all the starwar films (https://swapi.dev/) and 	add them as list items <li>. In brackets the number of people in that film
+		//					<li>A New Hope (18)</li>
+		
+
+		// Make sure the DOM is ready
+		$(document).ready(function(){
+			// event listener on button
+			$("#newJoke").on("click", loadNewJoke );
+
+			/**
+			 * Fetch joke from Chuck Norris API and show in HTML
+			 */ 
+			function loadNewJoke(){
+				$.get("https://api.chucknorris.io/jokes/random", function( data ){
+						// Show joke in the html 
+						$("#cn").text( data.value );
+						
+						loadYesNo();
+				});
+			} //-- end of loadNewJoke
+
+			/**
+			 * Fetch response from yes/no API and show image in HTML
+			 */ 
+			function loadYesNo(){
+				$.get("https://yesno.wtf/api", function ( data ){
+					$("#yesNo").attr("src", data.image).attr("alt", data.answer);
+				});
+			} //-- enf of loadYesNo
+
+			/**
+			 * Fetch all films from starwars API and list in HTML
+			 */ 
+			$.get("https://swapi.dev/api/films/", function( data ){
+				console.log( data );
+				// for ( let index in data.results ) data.results[index]; // index holds the index value 
+					for ( item of data.results){ // item hold the object
+						let numPeople = item.characters.length
+						let newItem = $("<li>" + item.title + " (" + numPeople + ")</li>");
+						$("#swf").append( newItem );
+				}
+			})
+
+		}); //-- end of $ready
 	</script>
 </body>
 
